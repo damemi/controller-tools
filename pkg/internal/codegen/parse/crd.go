@@ -163,6 +163,8 @@ func (b *APIs) typeToJSONSchemaProps(t *types.Type, found sets.String, comments 
 	unstructured := types.Name{Name: "Unstructured", Package: "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"}
 	rawExtension := types.Name{Name: "RawExtension", Package: "k8s.io/apimachinery/pkg/runtime"}
 	intOrString := types.Name{Name: "IntOrString", Package: "k8s.io/apimachinery/pkg/util/intstr"}
+	rawExtension := types.Name{Name: "RawExtension", Package: "k8s.io/apimachinery/pkg/runtime"}
+
 	// special types first
 	specialTypeProps := v1beta1.JSONSchemaProps{
 		Description: parseDescription(comments),
@@ -181,7 +183,7 @@ func (b *APIs) typeToJSONSchemaProps(t *types.Type, found sets.String, comments 
 	case meta:
 		specialTypeProps.Type = "object"
 		return specialTypeProps, b.objSchema()
-	case unstructured:
+	case unstructured, rawExtension:
 		specialTypeProps.Type = "object"
 		return specialTypeProps, b.objSchema()
 	case intOrString:
