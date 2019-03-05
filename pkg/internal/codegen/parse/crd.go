@@ -262,6 +262,9 @@ var primitiveTemplate = template.Must(template.New("map-template").Parse(
     {{ if .MinLength -}}
     MinLength: getInt({{ .MinLength }}),
     {{ end -}}
+	{{ if .Nullable -}}
+	Nullable: true,
+	{{ end -}}
 }`))
 
 // parsePrimitiveValidation returns a JSONSchemaProps object and its
@@ -314,6 +317,7 @@ func (b *APIs) parsePrimitiveValidation(t *types.Type, found sets.String, commen
 type mapTempateArgs struct {
 	Result            string
 	SkipMapValidation bool
+	Nullable          bool
 }
 
 var mapTemplate = template.Must(template.New("map-template").Parse(
@@ -323,6 +327,9 @@ var mapTemplate = template.Must(template.New("map-template").Parse(
         Allows: true,
         Schema: &{{.Result}},
     },{{end}}
+	{{ if .Nullable -}}
+	Nullable: true,
+	{{ end -}}
 }`))
 
 // parseMapValidation returns a JSONSchemaProps object and its serialization in
@@ -346,7 +353,7 @@ func (b *APIs) parseMapValidation(t *types.Type, found sets.String, comments []s
 	}
 
 	buff := &bytes.Buffer{}
-	if err := mapTemplate.Execute(buff, mapTempateArgs{Result: result, SkipMapValidation: parseOption.SkipMapValidation}); err != nil {
+	if err := mapTemplate.Execute(buff, mapTempateArgs{Result: result, SkipMapValidation: parseOption.SkipMapValidation, Nullable: props.Nullable}); err != nil {
 		log.Fatalf("%v", err)
 	}
 	return props, buff.String()
@@ -372,6 +379,9 @@ var arrayTemplate = template.Must(template.New("array-template").Parse(
         Schema: &{{.ItemsSchema}},
     },
     {{ end -}}
+	{{ if .Nullable -}}
+	Nullable: true,
+	{{ end -}}
 }`))
 
 type arrayTemplateArgs struct {
@@ -434,6 +444,9 @@ var objectTemplate = template.Must(template.New("object-template").Parse(
         "{{ $v }}", 
         {{ end -}}
     },{{ end -}}
+	{{ if .Nullable -}}
+	Nullable: true,
+	{{ end -}}
 }`))
 
 // parseObjectValidation returns a JSONSchemaProps object and its serialization in
