@@ -176,20 +176,14 @@ func (b *APIs) typeToJSONSchemaProps(t *types.Type, found sets.String, comments 
 		specialTypeProps.Format = "date-time"
 		return specialTypeProps, b.getTime()
 	case duration:
-		return v1beta1.JSONSchemaProps{
-			Type:        "string",
-			Description: parseDescription(comments),
-		}, b.getDuration()
+		specialTypeProps.Type = "string"
+		return specialTypeProps, b.getDuration()
 	case meta:
-		return v1beta1.JSONSchemaProps{
-			Type:        "object",
-			Description: parseDescription(comments),
-		}, b.objSchema()
+		specialTypeProps.Type = "object"
+		return specialTypeProps, b.objSchema()
 	case unstructured:
-		return v1beta1.JSONSchemaProps{
-			Type:        "object",
-			Description: parseDescription(comments),
-		}, b.objSchema()
+		specialTypeProps.Type = "object"
+		return specialTypeProps, b.objSchema()
 	case intOrString:
 		specialTypeProps.AnyOf = []v1beta1.JSONSchemaProps{
 			{
