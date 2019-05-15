@@ -330,19 +330,16 @@ func structToSchema(ctx *schemaContext, structType *ast.StructType) *v1beta1.JSO
 		}
 
 		inline := false
-		omitEmpty := false
 		for _, opt := range jsonOpts[1:] {
 			switch opt {
 			case "inline":
 				inline = true
-			case "omitempty":
-				omitEmpty = true
 			}
 		}
 		fieldName := jsonOpts[0]
 		inline = inline || fieldName == "" // anonymous fields are inline fields in YAML/JSON
 
-		if !inline && !omitEmpty {
+		if field.Markers.Get("kubebuilder:validation:Required") != nil {
 			props.Required = append(props.Required, fieldName)
 		}
 
